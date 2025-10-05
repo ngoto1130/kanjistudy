@@ -97,9 +97,13 @@ export function NotificationsList({
   }
 
   return (
-    <ul className="space-y-3" role="list">
+    <ul className="space-y-3" role="list" aria-label="notifications" data-testid="notifications-list">
       {notifications.map((notification) => (
-        <li key={notification.id}>
+        <li
+          key={notification.id}
+          className={notification.read ? 'notification-read' : 'notification-unread'}
+          role="listitem"
+        >
           <Card
             className={`transition-colors cursor-pointer hover:bg-accent ${
               notification.read ? 'opacity-70' : 'border-l-4 border-l-primary'
@@ -107,12 +111,12 @@ export function NotificationsList({
             onClick={() => onNotificationClick?.(notification.id)}
           >
             <CardContent className="p-4">
-              <div className="flex items-start gap-3">
+              <div className={`flex items-start gap-3 ${notification.read ? 'read' : 'unread'}`}>
                 <div className="flex-shrink-0 mt-0.5">
                   <NotificationIcon type={notification.type} />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between gap-2 mb-1">
+                  <div className={`flex items-center justify-between gap-2 mb-1 ${notification.read ? 'read-header' : 'unread-header'}`}>
                     <h4 className="font-semibold text-sm">
                       {notification.title}
                     </h4>

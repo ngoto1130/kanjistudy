@@ -31,7 +31,12 @@ export function MenuGrid({ items, columns }: MenuGridProps) {
         }}
       >
         {items.map((item) => (
-          <Link key={item.href} href={item.href} className="block min-h-[44px]">
+          <Link
+            key={item.href}
+            href={item.href}
+            className="block min-h-[44px]"
+            style={{ minHeight: '44px' }}
+          >
             <Card className="h-full transition-colors hover:bg-accent hover:border-primary cursor-pointer">
               <CardHeader className="p-4 sm:p-6">
                 <CardTitle className="text-base sm:text-lg">

@@ -53,13 +53,13 @@ export function LoginForm({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 max-w-md">
+    <form onSubmit={handleSubmit} className="space-y-4 max-w-md" noValidate>
       <div className="space-y-2">
         <label
           htmlFor="email"
           className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
         >
-          メールアドレス
+          Email
         </label>
         <input
           id="email"
@@ -70,7 +70,7 @@ export function LoginForm({
           autoComplete="email"
           className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
           placeholder="teacher@example.com"
-          aria-label="メールアドレス"
+          aria-label="Email"
         />
         {error && (
           <p className="text-sm text-destructive" role="alert">
@@ -83,7 +83,7 @@ export function LoginForm({
         disabled={isLoading}
         className="w-full"
       >
-        {isLoading ? '読み込み中...' : 'ログイン'}
+        {isLoading ? 'Loading...' : 'Login'}
       </Button>
     </form>
   );

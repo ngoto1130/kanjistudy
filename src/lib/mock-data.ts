@@ -155,17 +155,17 @@ export function generateMockNotifications(count = 10): Notification[] {
 
   const notificationTemplates: Array<{
     type: NotificationType;
-    titleTemplate: string;
+    titleTemplate: (studentName: string) => string;
     messageTemplate: (studentName: string) => string;
   }> = [
     {
       type: 'assignment-completion',
-      titleTemplate: 'Assignment Completed',
+      titleTemplate: (name) => `Assignment Completed - ${name}`,
       messageTemplate: (name) => `${name}が課題のすべての漢字をクリアしました。新しい課題を作成してください。`,
     },
     {
       type: 'system',
-      titleTemplate: 'New Student Registered',
+      titleTemplate: (name) => `New Student Registered - ${name}`,
       messageTemplate: (name) => `新しい生徒 ${name} が登録されました。`,
     },
   ];
@@ -178,7 +178,7 @@ export function generateMockNotifications(count = 10): Notification[] {
     notifications.push({
       id: `notif-${String(i + 1).padStart(3, '0')}`,
       type: template.type,
-      title: template.titleTemplate,
+      title: template.titleTemplate(student.name),
       message: template.messageTemplate(student.name),
       date: new Date(Date.now() - hoursAgo * 60 * 60 * 1000),
       read: random() > 0.5,
