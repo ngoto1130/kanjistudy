@@ -103,35 +103,35 @@
 
 **CRITICAL**: These tests MUST be written and MUST FAIL before ANY component implementation
 
-### T010 [P] - Write failing test for ProgressTable component
+### [X] T010 [P] - Write failing test for ProgressTable component
 **File**: `__tests__/components/teacher/progress-table.test.tsx`
 **Description**: Write contract test verifying ProgressTable renders student progress data, shows empty state, applies filters, calls onFilterChange, and has responsive layout (table on md+, cards on mobile)
 **Dependencies**: T001-T003 (needs types and mock data)
 **Parallel**: Yes (independent test file)
 **Expected**: ❌ MUST FAIL (component not implemented yet)
 
-### T011 [P] - Write failing test for NotificationsList component
+### [X] T011 [P] - Write failing test for NotificationsList component
 **File**: `__tests__/components/teacher/notifications-list.test.tsx`
 **Description**: Write contract test verifying NotificationsList renders notifications, shows correct type icons, displays empty state, calls onNotificationClick, formats dates, and distinguishes read/unread
 **Dependencies**: T001-T003 (needs types and mock data)
 **Parallel**: Yes (independent test file)
 **Expected**: ❌ MUST FAIL (component not implemented yet)
 
-### T012 [P] - Write failing test for MenuGrid component
+### [X] T012 [P] - Write failing test for MenuGrid component
 **File**: `__tests__/components/teacher/menu-grid.test.tsx`
 **Description**: Write contract test verifying MenuGrid renders 6 menu items, links navigate correctly, responsive grid (1 col mobile, 2 col tablet, 3 col desktop), and touch targets >= 44px
 **Dependencies**: T001-T003 (needs types and mock data)
 **Parallel**: Yes (independent test file)
 **Expected**: ❌ MUST FAIL (component not implemented yet)
 
-### T013 [P] - Write failing test for BreadcrumbNav component
+### [X] T013 [P] - Write failing test for BreadcrumbNav component
 **File**: `__tests__/components/teacher/breadcrumb-nav.test.tsx`
 **Description**: Write contract test verifying BreadcrumbNav renders breadcrumb items, current item is plain text, non-current items are links, separators present, compact on mobile
 **Dependencies**: T001-T003 (needs types and mock data)
 **Parallel**: Yes (independent test file)
 **Expected**: ❌ MUST FAIL (component not implemented yet)
 
-### T014 [P] - Write failing test for LoginForm component
+### [X] T014 [P] - Write failing test for LoginForm component
 **File**: `__tests__/components/teacher/login-form.test.tsx`
 **Description**: Write contract test verifying LoginForm renders email input, calls onSubmit with email, pre-fills defaultEmail, shows loading state, validates email format
 **Dependencies**: T001-T003 (needs types and mock data)
@@ -154,35 +154,35 @@ npm test -- __tests__/components/teacher/
 
 **CRITICAL**: Implement components to pass tests WITHOUT modifying tests
 
-### T015 [P] - Implement ProgressTable component
+### [X] T015 [P] - Implement ProgressTable component
 **File**: `src/components/teacher/progress-table.tsx`
 **Description**: Implement ProgressTable to pass contract tests - render student progress data, empty state, filter controls, responsive layout (table desktop, cards mobile)
 **Dependencies**: T010 (test must fail first), T004 (Table), T005 (Card), T009 (Select)
 **Parallel**: Yes (independent component file)
 **Expected**: ✅ Tests in T010 now PASS
 
-### T016 [P] - Implement NotificationsList component
+### [X] T016 [P] - Implement NotificationsList component
 **File**: `src/components/teacher/notifications-list.tsx`
 **Description**: Implement NotificationsList to pass contract tests - render notifications with type icons, empty state, click handlers, date formatting, read/unread styling
 **Dependencies**: T011 (test must fail first), T005 (Card), T007 (Badge)
 **Parallel**: Yes (independent component file)
 **Expected**: ✅ Tests in T011 now PASS
 
-### T017 [P] - Implement MenuGrid component
+### [X] T017 [P] - Implement MenuGrid component
 **File**: `src/components/teacher/menu-grid.tsx`
 **Description**: Implement MenuGrid to pass contract tests - render 6 menu cards, navigation links, responsive grid (1/2/3 columns), touch targets >= 44px
 **Dependencies**: T012 (test must fail first), T005 (Card), T006 (Button)
 **Parallel**: Yes (independent component file)
 **Expected**: ✅ Tests in T012 now PASS
 
-### T018 [P] - Implement BreadcrumbNav component (Client Component)
+### [X] T018 [P] - Implement BreadcrumbNav component (Client Component)
 **File**: `src/components/teacher/breadcrumb-nav.tsx`
 **Description**: Implement BreadcrumbNav to pass contract tests - use 'use client', usePathname hook, render breadcrumb items, current item as text, links for non-current, compact mobile
 **Dependencies**: T013 (test must fail first), T008 (Breadcrumb)
 **Parallel**: Yes (independent component file)
 **Expected**: ✅ Tests in T013 now PASS
 
-### T019 [P] - Implement LoginForm component (Client Component)
+### [X] T019 [P] - Implement LoginForm component (Client Component)
 **File**: `src/components/teacher/login-form.tsx`
 **Description**: Implement LoginForm to pass contract tests - use 'use client', email input, onSubmit handler, defaultEmail, loading state, email validation
 **Dependencies**: T014 (test must fail first), T006 (Button)

@@ -375,8 +375,9 @@ export function generateBreadcrumbs(pathname: string): BreadcrumbItem[] {
  * Apply progress filter to students
  * In mockup, this returns StudentProgress with original metrics (no actual filtering)
  * @param students Student array to filter
- * @param filter Progress filter settings
+ * @param filter Progress filter settings (unused in mockup)
  */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function applyProgressFilter(students: Student[], filter: ProgressFilter): StudentProgress[] {
   // In mockup, filter is ignored - just transform students to StudentProgress
   return students.map(student => ({
