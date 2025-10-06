@@ -128,7 +128,7 @@
   - All unit tests should fail (no utilities exist yet)
   - This is EXPECTED and REQUIRED for TDD
 
-- [ ] **T018** Commit failing tests with message: "test: add failing tests for teacher authentication and navigation"
+- [X] **T018** Commit failing tests with message: "test: add failing tests for teacher authentication and navigation"
   - Stage: `__tests__/contract/`, `__tests__/integration/`, `__tests__/unit/`
   - Verify: `npm run build` still succeeds (tests can fail, but build should pass)
   - Push to branch: 002-docs-teacher-dashboard1
