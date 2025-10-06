@@ -138,39 +138,39 @@
 ## Phase 3.3: Core Implementation (ONLY after T018 complete)
 
 ### Type Definitions
-- [ ] **T019** Define TypeScript types in `src/types/auth.ts`
+- [X] **T019** Define TypeScript types in `src/types/auth.ts`
   - Teacher interface (email, password, name)
   - Session interface (accessToken, refreshToken, teacherEmail, issuedAt, expiresAt)
   - MenuItem interface (id, label, href?, children?, order)
   - RouteProtection interface (pattern, requiresAuth, redirectOnFail)
 
 ### Utility Functions
-- [ ] **T020** Implement auth utilities in `src/lib/auth.ts`
+- [X] **T020** Implement auth utilities in `src/lib/auth.ts`
   - validateCredentials(email, password): boolean - check against hardcoded teacher
   - createTokens(teacherEmail): { accessToken, refreshToken, expiresAt } - use crypto.randomBytes()
   - verifyToken(token): { valid, expired, payload } - simple token validation (no JWT for prototype)
   - HARDCODED_TEACHER constant
 
-- [ ] **T021** Implement session utilities in `src/lib/session.ts`
+- [X] **T021** Implement session utilities in `src/lib/session.ts`
   - createSession(teacher): Session - generate tokens with 30min/28day expiration
   - validateSession(accessToken, refreshToken): SessionState - check expiration times
   - refreshSession(refreshToken): new access token - issue new 30min token
   - Session state enum: Active, Refreshable, Expired, Invalidated
 
 ### API Routes
-- [ ] **T022** Implement POST /api/auth/login in `src/app/api/auth/login/route.ts`
+- [X] **T022** Implement POST /api/auth/login in `src/app/api/auth/login/route.ts`
   - Validate request body (email, password)
   - Call validateCredentials() from lib/auth.ts
   - If valid: createSession(), set httpOnly cookies, return 200 + teacher + expiresAt
   - If invalid: return 401 + error message
   - Cookie options: httpOnly=true, secure=true (production), sameSite=strict, maxAge
 
-- [ ] **T023** Implement POST /api/auth/logout in `src/app/api/auth/logout/route.ts`
+- [X] **T023** Implement POST /api/auth/logout in `src/app/api/auth/logout/route.ts`
   - Check for existing session cookies
   - Clear both cookies (set Max-Age=0)
   - Return 200 + success message
 
-- [ ] **T024** Implement GET /api/auth/session in `src/app/api/auth/session/route.ts`
+- [X] **T024** Implement GET /api/auth/session in `src/app/api/auth/session/route.ts`
   - Read access_token and refresh_token from cookies
   - Call validateSession() from lib/session.ts
   - If Active: return 200 + session valid
@@ -178,7 +178,7 @@
   - If Expired: return 401 + error
 
 ### Middleware (Route Protection)
-- [ ] **T025** Implement Next.js middleware in `src/middleware.ts`
+- [X] **T025** Implement Next.js middleware in `src/middleware.ts`
   - Export config with matcher: ['/teacher/:path*']
   - Read access_token from cookies
   - If valid: allow request
@@ -186,25 +186,25 @@
   - Use NextResponse.redirect()
 
 ### UI Components (shadcn/ui)
-- [ ] **T026** Install shadcn/ui Button component (`npx shadcn@latest add button`)
+- [X] **T026** Install shadcn/ui Button component (`npx shadcn@latest add button`)
   - Verify 'use client' directive is present in src/components/ui/button.tsx
 
-- [ ] **T027** Install shadcn/ui NavigationMenu component (`npx shadcn@latest add navigation-menu`)
+- [X] **T027** Install shadcn/ui NavigationMenu component (`npx shadcn@latest add navigation-menu`)
   - Verify 'use client' directive is present
   - Component will be used for desktop navigation
 
-- [ ] **T028** Install shadcn/ui Sheet component (`npx shadcn@latest add sheet`)
+- [X] **T028** Install shadcn/ui Sheet component (`npx shadcn@latest add sheet`)
   - Verify 'use client' directive is present
   - Component will be used for mobile drawer
 
-- [ ] **T029** Install shadcn/ui Input component (`npx shadcn@latest add input`)
+- [X] **T029** Install shadcn/ui Input component (`npx shadcn@latest add input`)
   - Used for login form email/password fields
 
-- [ ] **T030** Install shadcn/ui Form components (`npx shadcn@latest add form`)
+- [X] **T030** Install shadcn/ui Form components (`npx shadcn@latest add form`)
   - Used for login form validation and error handling
 
 ### Navigation Components
-- [ ] **T031** Create desktop navigation menu in `src/components/ui/teacher-nav.tsx`
+- [X] **T031** Create desktop navigation menu in `src/components/ui/teacher-nav.tsx`
   - 'use client' directive (uses state for dropdowns)
   - Use shadcn/ui NavigationMenu component
   - Implement MENU_ITEMS structure from data-model.md
@@ -213,7 +213,7 @@
   - Logout button that calls POST /api/auth/logout then redirects
   - Desktop only: hidden on mobile (md:flex)
 
-- [ ] **T032** Create mobile navigation drawer in `src/components/ui/teacher-mobile-nav.tsx`
+- [X] **T032** Create mobile navigation drawer in `src/components/ui/teacher-mobile-nav.tsx`
   - 'use client' directive (uses Sheet component)
   - Use shadcn/ui Sheet component
   - Hamburger icon trigger (☰)
@@ -223,7 +223,7 @@
   - Mobile only: visible below md breakpoint (flex md:hidden)
 
 ### Pages
-- [ ] **T033** Create login page in `src/app/(auth)/login/page.tsx`
+- [X] **T033** Create login page in `src/app/(auth)/login/page.tsx`
   - 'use client' directive (uses form state, useRouter)
   - Use shadcn/ui Form, Input, Button components
   - Email field with validation (required, email format)
@@ -233,45 +233,45 @@
   - On error: display error message below form
   - Responsive: mobile-first design
 
-- [ ] **T034** Create error page in `src/app/error/page.tsx`
+- [X] **T034** Create error page in `src/app/error/page.tsx`
   - Display simple message: "Access denied. Please login."
   - Link to /login page
   - Can be Server Component (no client state needed)
 
-- [ ] **T035** Create teacher dashboard in `src/app/teacher/dashboard/page.tsx`
+- [X] **T035** Create teacher dashboard in `src/app/teacher/dashboard/page.tsx`
   - Server Component (no client interactions on dashboard itself)
   - Import TeacherNav and TeacherMobileNav components
   - Display welcome message: "Welcome, Teacher"
   - Navigation menu visible at top
   - Responsive layout
 
-- [ ] **T036** [P] Create placeholder page for Assignments in `src/app/teacher/assignments/page.tsx`
+- [X] **T036** [P] Create placeholder page for Assignments in `src/app/teacher/assignments/page.tsx`
   - Server Component
   - Simple heading: "Assignments"
   - Include navigation menu
 
-- [ ] **T037** [P] Create placeholder page for Problem Management in `src/app/teacher/problem-management/page.tsx`
+- [X] **T037** [P] Create placeholder page for Problem Management in `src/app/teacher/problem-management/page.tsx`
   - Server Component
   - Simple heading: "Problem Management"
 
-- [ ] **T038** [P] Create placeholder page for Hint Management in `src/app/teacher/hint-management/page.tsx`
+- [X] **T038** [P] Create placeholder page for Hint Management in `src/app/teacher/hint-management/page.tsx`
   - Server Component
   - Simple heading: "Hint Management"
 
-- [ ] **T039** [P] Create placeholder page for Student Management in `src/app/teacher/student-management/page.tsx`
+- [X] **T039** [P] Create placeholder page for Student Management in `src/app/teacher/student-management/page.tsx`
   - Server Component
   - Simple heading: "Student Management"
 
-- [ ] **T040** [P] Create placeholder page for Parent Management in `src/app/teacher/parent-management/page.tsx`
+- [X] **T040** [P] Create placeholder page for Parent Management in `src/app/teacher/parent-management/page.tsx`
   - Server Component
   - Simple heading: "Parent Management"
 
-- [ ] **T041** [P] Create placeholder pages for Reports in `src/app/teacher/reports/[id]/page.tsx`
+- [X] **T041** [P] Create placeholder pages for Reports in `src/app/teacher/reports/[id]/page.tsx`
   - Server Component with dynamic route
   - Display: "Report {id}"
   - Handles id = 1, 2, 3
 
-- [ ] **T042** [P] Create placeholder page for Admin in `src/app/teacher/admin/page.tsx`
+- [X] **T042** [P] Create placeholder page for Admin in `src/app/teacher/admin/page.tsx`
   - Server Component
   - Simple heading: "Administrative Functions - Coming Soon"
 

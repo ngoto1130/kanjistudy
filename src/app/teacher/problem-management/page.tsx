@@ -1,7 +1,7 @@
 import { TeacherNav } from "@/components/ui/teacher-nav"
 import { TeacherMobileNav } from "@/components/ui/teacher-mobile-nav"
 
-export default function AdminPage() {
+export default function ProblemManagementPage() {
   return (
     <div className="min-h-screen bg-background">
       <TeacherNav />
@@ -10,15 +10,15 @@ export default function AdminPage() {
       <main className="container mx-auto p-6">
         <div className="space-y-6">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight">Administrative Functions - Coming Soon</h1>
+            <h1 className="text-3xl font-bold tracking-tight">Problem Management</h1>
             <p className="text-muted-foreground mt-2">
-              Access administrative settings and system configuration
+              Manage kanji problems and exercises
             </p>
           </div>
 
           <div className="rounded-lg border bg-card p-8">
             <p className="text-muted-foreground text-center">
-              Administrator interface - Coming soon
+              Problem management interface - Coming soon
             </p>
           </div>
         </div>

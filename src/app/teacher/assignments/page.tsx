@@ -1,35 +1,28 @@
-import { Metadata } from 'next';
-import { BreadcrumbNav } from '@/components/teacher/breadcrumb-nav';
-
-export const metadata: Metadata = {
-  title: 'Assignment Creation - Teacher Dashboard - KanjiStudy',
-  description: 'Create and manage kanji assignments for students',
-};
+import { TeacherNav } from "@/components/ui/teacher-nav"
+import { TeacherMobileNav } from "@/components/ui/teacher-mobile-nav"
 
 export default function AssignmentsPage() {
-  const breadcrumbs = [
-    { label: 'Dashboard', href: '/teacher/dashboard', isCurrent: false },
-    { label: 'Assignment Creation', href: '/teacher/assignments', isCurrent: true },
-  ];
-
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-7xl mx-auto space-y-8">
-        <BreadcrumbNav items={breadcrumbs} />
+    <div className="min-h-screen bg-background">
+      <TeacherNav />
+      <TeacherMobileNav />
 
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">Assignment Creation</h1>
-          <p className="mt-2 text-gray-600">
-            Create and manage kanji assignments for students
-          </p>
-        </div>
+      <main className="container mx-auto p-6">
+        <div className="space-y-6">
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight">Assignments</h1>
+            <p className="text-muted-foreground mt-2">
+              Create and manage kanji assignments for students
+            </p>
+          </div>
 
-        <div className="bg-white p-8 rounded-lg shadow">
-          <p className="text-gray-500 text-center">
-            Assignment creation interface - Coming soon
-          </p>
+          <div className="rounded-lg border bg-card p-8">
+            <p className="text-muted-foreground text-center">
+              Assignment creation interface - Coming soon
+            </p>
+          </div>
         </div>
-      </div>
+      </main>
     </div>
-  );
+  )
 }
