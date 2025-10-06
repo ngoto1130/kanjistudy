@@ -1,0 +1,243 @@
+openapi: 3.0.0
+info:
+  title: Teacher Authentication API
+  description: API contracts for teacher authentication and session management
+  version: 1.0.0
+  contact:
+    name: KanjiStudy Team
+
+servers:
+  - url: http://localhost:3000/api
+    description: Local development server
+
+paths:
+  /auth/login:
+    post:
+      summary: Authenticate teacher and create session
+      description: Validates teacher credentials and returns session tokens
+      operationId: loginTeacher
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                  maxLength: 255
+                  example: teacher1@teacher.com
+                  description: Teacher's email address
+                password:
+                  type: string
+                  minLength: 8
+                  example: Password!
+                  description: Teacher's password (min 8 chars, requires special char)
+      responses:
+        '200':
+          description: Login successful
+          headers:
+            Set-Cookie:
+              description: Session tokens set as httpOnly cookies
+              schema:
+                type: string
+                example: session_access_token=xxx; HttpOnly; Secure; SameSite=Strict; Max-Age=1800
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - success
+                  - teacher
+                  - expiresAt
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  teacher:
+                    type: object
+                    required:
+                      - email
+                      - name
+                    properties:
+                      email:
+                        type: string
+                        format: email
+                        example: teacher1@teacher.com
+                      name:
+                        type: string
+                        example: Teacher One
+                  expiresAt:
+                    type: object
+                    required:
+                      - accessToken
+                      - refreshToken
+                    properties:
+                      accessToken:
+                        type: number
+                        format: int64
+                        description: Unix timestamp when access token expires (30min from now)
+                        example: 1696345200
+                      refreshToken:
+                        type: number
+                        format: int64
+                        description: Unix timestamp when refresh token expires (28 days from now)
+                        example: 1698937200
+        '401':
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                error: Invalid email or password
+                statusCode: 401
+        '400':
+          description: Bad request (validation error)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                error: Email is required
+                statusCode: 400
+
+  /auth/logout:
+    post:
+      summary: Terminate teacher session
+      description: Invalidates session tokens and clears cookies
+      operationId: logoutTeacher
+      tags:
+        - Authentication
+      security:
+        - sessionCookie: []
+      responses:
+        '200':
+          description: Logout successful
+          headers:
+            Set-Cookie:
+              description: Session cookies cleared
+              schema:
+                type: string
+                example: session_access_token=; Max-Age=0
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - success
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+        '401':
+          description: No active session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                error: No active session
+                statusCode: 401
+
+  /auth/session:
+    get:
+      summary: Validate current session
+      description: Checks if session tokens are valid and refreshes access token if needed
+      operationId: validateSession
+      tags:
+        - Authentication
+      security:
+        - sessionCookie: []
+      responses:
+        '200':
+          description: Session valid
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - valid
+                  - teacher
+                  - expiresAt
+                properties:
+                  valid:
+                    type: boolean
+                    example: true
+                  teacher:
+                    type: object
+                    required:
+                      - email
+                      - name
+                    properties:
+                      email:
+                        type: string
+                        format: email
+                        example: teacher1@teacher.com
+                      name:
+                        type: string
+                        example: Teacher One
+                  expiresAt:
+                    type: object
+                    required:
+                      - accessToken
+                      - refreshToken
+                    properties:
+                      accessToken:
+                        type: number
+                        format: int64
+                        description: Unix timestamp when access token expires
+                        example: 1696345200
+                      refreshToken:
+                        type: number
+                        format: int64
+                        description: Unix timestamp when refresh token expires
+                        example: 1698937200
+                  refreshed:
+                    type: boolean
+                    description: True if access token was refreshed during this request
+                    example: false
+        '401':
+          description: Session invalid or expired
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                error: Session expired
+                statusCode: 401
+
+components:
+  schemas:
+    Error:
+      type: object
+      required:
+        - error
+        - statusCode
+      properties:
+        error:
+          type: string
+          description: Human-readable error message
+        statusCode:
+          type: integer
+          description: HTTP status code
+        details:
+          type: object
+          description: Additional error details (optional)
+
+  securitySchemes:
+    sessionCookie:
+      type: apiKey
+      in: cookie
+      name: session_access_token
+      description: Session access token stored in httpOnly cookie
+
+tags:
+  - name: Authentication
+    description: Teacher authentication and session management endpoints
