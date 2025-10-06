@@ -58,8 +58,8 @@ export interface TokenVerification {
   valid: boolean;
   expired: boolean;
   payload?: {
-    teacherEmail: string;
-    issuedAt: number;
+    email: string;
+    type: string;
   };
 }
 

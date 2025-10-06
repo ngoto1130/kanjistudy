@@ -84,7 +84,7 @@ export function TeacherNav() {
 
   return (
     <nav className="hidden md:flex items-center justify-between w-full border-b p-4 bg-background">
-      <NavigationMenu>
+      <NavigationMenu viewport={false}>
         <NavigationMenuList>
           {MENU_ITEMS.sort((a, b) => a.order - b.order).map((item) => (
             <NavigationMenuItem key={item.id}>
@@ -113,11 +113,11 @@ export function TeacherNav() {
                   </NavigationMenuContent>
                 </>
               ) : (
-                <Link href={item.href || '#'} legacyBehavior passHref>
-                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
+                  <Link href={item.href || '#'}>
                     {item.label}
-                  </NavigationMenuLink>
-                </Link>
+                  </Link>
+                </NavigationMenuLink>
               )}
             </NavigationMenuItem>
           ))}

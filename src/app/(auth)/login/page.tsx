@@ -18,24 +18,9 @@ export default function LoginPage() {
     setError('')
     setIsLoading(true)
 
-    // Client-side validation
+    // Basic validation
     if (!email || !password) {
-      setError('Email and password are required')
-      setIsLoading(false)
-      return
-    }
-
-    // Email format validation
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    if (!emailPattern.test(email)) {
-      setError('Invalid email format')
-      setIsLoading(false)
-      return
-    }
-
-    // Password validation
-    if (password.length < 8) {
-      setError('Password must be at least 8 characters')
+      setError('Invalid email or password')
       setIsLoading(false)
       return
     }

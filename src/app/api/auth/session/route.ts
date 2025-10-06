@@ -15,10 +15,9 @@ export async function GET(request: NextRequest) {
     const refreshToken = request.cookies.get('session_refresh_token')?.value;
     const accessTokenExpiresStr = request.cookies.get('session_access_token_expires')?.value;
     const refreshTokenExpiresStr = request.cookies.get('session_refresh_token_expires')?.value;
-    const teacherEmail = request.cookies.get('session_teacher_email')?.value;
 
     // Check if tokens exist
-    if (!accessToken || !refreshToken || !accessTokenExpiresStr || !refreshTokenExpiresStr || !teacherEmail) {
+    if (!accessToken || !refreshToken || !accessTokenExpiresStr || !refreshTokenExpiresStr) {
       const errorResponse: ErrorResponse = {
         error: 'No active session',
         statusCode: 401,
@@ -30,13 +29,13 @@ export async function GET(request: NextRequest) {
     const accessTokenExpiresAt = parseInt(accessTokenExpiresStr, 10);
     const refreshTokenExpiresAt = parseInt(refreshTokenExpiresStr, 10);
 
-    // Validate session
-    const sessionState = validateSession(
-      accessToken,
-      refreshToken,
-      accessTokenExpiresAt,
-      refreshTokenExpiresAt
-    );
+    // Validate session (tokens contain email in payload now)
+    const sessionState = validateSession(accessToken, refreshToken);
+
+    // Extract teacher email from access token payload
+    const { verifyToken } = await import('@/lib/auth');
+    const accessTokenData = verifyToken(accessToken);
+    const teacherEmail = accessTokenData.payload?.email || HARDCODED_TEACHER.email;
 
     // Handle session state
     if (sessionState === SessionState.Active) {
@@ -59,13 +58,16 @@ export async function GET(request: NextRequest) {
 
     if (sessionState === SessionState.Refreshable) {
       // Access token expired, but refresh token valid - issue new access token
-      const newTokens = refreshSession(refreshToken, teacherEmail);
+      const newAccessToken = refreshSession(refreshToken);
+
+      // Get new expiration time (30 minutes from now)
+      const newAccessTokenExpiresAt = Date.now() + 30 * 60 * 1000;
 
       // Update session in store
       const session = getSession(accessToken);
       if (session) {
-        session.accessToken = newTokens.accessToken;
-        session.accessTokenExpiresAt = newTokens.accessTokenExpiresAt;
+        session.accessToken = newAccessToken;
+        session.accessTokenExpiresAt = newAccessTokenExpiresAt;
         storeSession(session);
       }
 
@@ -77,7 +79,7 @@ export async function GET(request: NextRequest) {
           name: HARDCODED_TEACHER.name || 'Teacher',
         },
         expiresAt: {
-          accessToken: newTokens.accessTokenExpiresAt,
+          accessToken: newAccessTokenExpiresAt,
           refreshToken: refreshTokenExpiresAt,
         },
         refreshed: true,
@@ -87,7 +89,7 @@ export async function GET(request: NextRequest) {
 
       // Update access token cookie
       const isProduction = process.env.NODE_ENV === 'production';
-      nextResponse.cookies.set('session_access_token', newTokens.accessToken, {
+      nextResponse.cookies.set('session_access_token', newAccessToken, {
         httpOnly: true,
         secure: isProduction,
         sameSite: 'strict',
@@ -95,7 +97,7 @@ export async function GET(request: NextRequest) {
         path: '/',
       });
 
-      nextResponse.cookies.set('session_access_token_expires', newTokens.accessTokenExpiresAt.toString(), {
+      nextResponse.cookies.set('session_access_token_expires', newAccessTokenExpiresAt.toString(), {
         httpOnly: true,
         secure: isProduction,
         sameSite: 'strict',

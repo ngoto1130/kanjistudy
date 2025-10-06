@@ -11,6 +11,18 @@ export const HARDCODED_TEACHER: Teacher = {
 };
 
 /**
+ * Token metadata store (in-memory for prototype)
+ * Maps token string to its metadata (email, expiration, type)
+ */
+interface TokenMetadata {
+  email: string;
+  expiresAt: number;
+  type: 'access' | 'refresh';
+}
+
+const tokenStore: Map<string, TokenMetadata> = new Map();
+
+/**
  * Validates teacher credentials against hardcoded data
  * @param email - Teacher's email address
  * @param password - Teacher's password
@@ -36,15 +48,28 @@ export function createTokens(teacherEmail: string): {
     refreshToken: number;
   };
 } {
-  const now = Math.floor(Date.now() / 1000); // Unix timestamp in seconds
+  const now = Date.now(); // Unix timestamp in milliseconds
 
-  // Generate secure random tokens
+  // Calculate expiration times
+  const accessTokenExpiresAt = now + 30 * 60 * 1000; // 30 minutes in milliseconds
+  const refreshTokenExpiresAt = now + 28 * 24 * 60 * 60 * 1000; // 28 days in milliseconds
+
+  // Generate secure random tokens (pure hex for security)
   const accessToken = randomBytes(32).toString('hex');
   const refreshToken = randomBytes(32).toString('hex');
 
-  // Calculate expiration times
-  const accessTokenExpiresAt = now + 1800; // 30 minutes (1800 seconds)
-  const refreshTokenExpiresAt = now + 2419200; // 28 days (2419200 seconds)
+  // Store token metadata
+  tokenStore.set(accessToken, {
+    email: teacherEmail,
+    expiresAt: accessTokenExpiresAt,
+    type: 'access',
+  });
+
+  tokenStore.set(refreshToken, {
+    email: teacherEmail,
+    expiresAt: refreshTokenExpiresAt,
+    type: 'refresh',
+  });
 
   return {
     accessToken,
@@ -62,13 +87,9 @@ export function createTokens(teacherEmail: string): {
  * In production, use JWT with proper signature verification.
  *
  * @param token - Token string to verify
- * @param expiresAt - Unix timestamp when token expires
  * @returns Verification result with valid status, expiration status, and payload
  */
-export function verifyToken(
-  token: string,
-  expiresAt: number
-): TokenVerification {
+export function verifyToken(token: string): TokenVerification {
   // Check if token exists and is non-empty
   if (!token || token.trim().length === 0) {
     return {
@@ -77,7 +98,7 @@ export function verifyToken(
     };
   }
 
-  // Check token format (should be 64 hex characters for our randomBytes(32))
+  // Check token format (should be 64 hex characters)
   const hexPattern = /^[a-f0-9]{64}$/;
   if (!hexPattern.test(token)) {
     return {
@@ -86,13 +107,26 @@ export function verifyToken(
     };
   }
 
+  // Retrieve metadata from store
+  const metadata = tokenStore.get(token);
+  if (!metadata) {
+    return {
+      valid: false,
+      expired: false,
+    };
+  }
+
   // Check expiration
-  const now = Math.floor(Date.now() / 1000);
-  const expired = now >= expiresAt;
+  const now = Date.now();
+  const expired = now >= metadata.expiresAt;
 
   return {
     valid: !expired,
     expired,
+    payload: {
+      email: metadata.email,
+      type: metadata.type,
+    },
   };
 }
 

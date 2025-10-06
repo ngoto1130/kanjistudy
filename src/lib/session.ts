@@ -2,13 +2,16 @@ import type { Teacher, Session } from '@/types/auth';
 import { SessionState } from '@/types/auth';
 import { createTokens, verifyToken } from './auth';
 
+// Re-export SessionState for tests
+export { SessionState };
+
 /**
  * Creates a new session for an authenticated teacher
  * @param teacher - Authenticated teacher object
  * @returns Session object with tokens and expiration times
  */
 export function createSession(teacher: Teacher): Session {
-  const now = Math.floor(Date.now() / 1000); // Unix timestamp in seconds
+  const now = Date.now(); // Unix timestamp in milliseconds
 
   const tokens = createTokens(teacher.email);
 
@@ -26,18 +29,14 @@ export function createSession(teacher: Teacher): Session {
  * Validates a session based on access and refresh tokens
  * @param accessToken - Current access token
  * @param refreshToken - Current refresh token
- * @param accessTokenExpiresAt - Access token expiration timestamp
- * @param refreshTokenExpiresAt - Refresh token expiration timestamp
  * @returns Session state (Active, Refreshable, Expired, or Invalidated)
  */
 export function validateSession(
   accessToken: string,
-  refreshToken: string,
-  accessTokenExpiresAt: number,
-  refreshTokenExpiresAt: number
+  refreshToken: string
 ): SessionState {
   // Verify access token
-  const accessTokenVerification = verifyToken(accessToken, accessTokenExpiresAt);
+  const accessTokenVerification = verifyToken(accessToken);
 
   // If access token is valid, session is Active
   if (accessTokenVerification.valid) {
@@ -45,10 +44,7 @@ export function validateSession(
   }
 
   // Access token expired, check refresh token
-  const refreshTokenVerification = verifyToken(
-    refreshToken,
-    refreshTokenExpiresAt
-  );
+  const refreshTokenVerification = verifyToken(refreshToken);
 
   // If refresh token is valid, session is Refreshable
   if (refreshTokenVerification.valid) {
@@ -70,25 +66,22 @@ export function validateSession(
 /**
  * Refreshes a session by issuing a new access token
  * @param refreshToken - Valid refresh token
- * @param teacherEmail - Email of the authenticated teacher
- * @returns New access token and expiration timestamp
+ * @returns New access token string
  */
-export function refreshSession(
-  refreshToken: string,
-  teacherEmail: string
-): {
-  accessToken: string;
-  accessTokenExpiresAt: number;
-} {
-  const now = Math.floor(Date.now() / 1000);
+export function refreshSession(refreshToken: string): string {
+  // Verify refresh token is valid
+  const verification = verifyToken(refreshToken);
+  if (!verification.valid || !verification.payload) {
+    throw new Error('Invalid refresh token');
+  }
+
+  // Extract teacher email from refresh token payload
+  const teacherEmail = verification.payload.email;
 
   // Generate new access token
   const tokens = createTokens(teacherEmail);
 
-  return {
-    accessToken: tokens.accessToken,
-    accessTokenExpiresAt: tokens.expiresAt.accessToken,
-  };
+  return tokens.accessToken;
 }
 
 /**
