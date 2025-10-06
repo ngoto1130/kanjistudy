@@ -45,39 +45,39 @@
 **CRITICAL: These tests MUST be written and MUST FAIL before ANY implementation**
 
 ### Contract Tests (API Endpoints)
-- [ ] **T006** [P] Write failing contract test for POST /api/auth/login in `__tests__/contract/auth-login.test.ts`
+- [X] **T006** [P] Write failing contract test for POST /api/auth/login in `__tests__/contract/auth-login.test.ts`
   - Test valid credentials → 200 + cookies + teacher object
   - Test invalid credentials → 401 + error message
   - Test missing fields → 400 + validation error
   - Verify response schema matches auth-api.yaml
 
-- [ ] **T007** [P] Write failing contract test for POST /api/auth/logout in `__tests__/contract/auth-logout.test.ts`
+- [X] **T007** [P] Write failing contract test for POST /api/auth/logout in `__tests__/contract/auth-logout.test.ts`
   - Test with valid session → 200 + cookies cleared
   - Test without session → 401 + error message
   - Verify response schema matches auth-api.yaml
 
-- [ ] **T008** [P] Write failing contract test for GET /api/auth/session in `__tests__/contract/auth-session.test.ts`
+- [X] **T008** [P] Write failing contract test for GET /api/auth/session in `__tests__/contract/auth-session.test.ts`
   - Test with valid access token → 200 + session valid
   - Test with expired access token but valid refresh → 200 + new access token
   - Test with both tokens expired → 401 + error
   - Verify response schema matches auth-api.yaml
 
 ### Integration Tests (User Stories)
-- [ ] **T009** [P] Write failing integration test for Scenario 1 (successful login flow) in `__tests__/integration/teacher-login.test.tsx`
+- [X] **T009** [P] Write failing integration test for Scenario 1 (successful login flow) in `__tests__/integration/teacher-login.test.tsx`
   - Render login page
   - Fill email: teacher1@teacher.com, password: Password!
   - Click login button
   - Assert redirect to /teacher/dashboard
   - Assert cookies set (session_access_token, session_refresh_token)
 
-- [ ] **T010** [P] Write failing integration test for Scenario 2 (invalid credentials) in `__tests__/integration/teacher-login-error.test.tsx`
+- [X] **T010** [P] Write failing integration test for Scenario 2 (invalid credentials) in `__tests__/integration/teacher-login-error.test.tsx`
   - Render login page
   - Fill invalid credentials
   - Click login button
   - Assert remain on /login page
   - Assert error message displayed
 
-- [ ] **T011** [P] Write failing integration test for Scenario 3-7 (navigation flows) in `__tests__/integration/teacher-navigation.test.tsx`
+- [X] **T011** [P] Write failing integration test for Scenario 3-7 (navigation flows) in `__tests__/integration/teacher-navigation.test.tsx`
   - Mock authenticated session
   - Test navigation to /teacher/assignments
   - Test Problem Management dropdown (2 items)
@@ -85,14 +85,14 @@
   - Test Reports dropdown (3 items)
   - Test Administrative Functions link
 
-- [ ] **T012** [P] Write failing integration test for Scenario 8 (unauthorized access) in `__tests__/integration/access-control.test.tsx`
+- [X] **T012** [P] Write failing integration test for Scenario 8 (unauthorized access) in `__tests__/integration/access-control.test.tsx`
   - Clear session cookies
   - Attempt to access /teacher/dashboard
   - Assert redirect to /error page
   - Assert error message displayed
   - Repeat for other protected routes
 
-- [ ] **T013** [P] Write failing integration test for Scenario 9 (logout) in `__tests__/integration/teacher-logout.test.tsx`
+- [X] **T013** [P] Write failing integration test for Scenario 9 (logout) in `__tests__/integration/teacher-logout.test.tsx`
   - Mock authenticated session
   - Render dashboard with navigation
   - Click logout button
@@ -100,20 +100,20 @@
   - Assert cookies cleared
   - Attempt to access protected route → redirect to /error
 
-- [ ] **T014** [P] Write failing integration test for Scenario 10 (responsive design) in `__tests__/integration/responsive-navigation.test.tsx`
+- [X] **T014** [P] Write failing integration test for Scenario 10 (responsive design) in `__tests__/integration/responsive-navigation.test.tsx`
   - Test mobile viewport (375px): hamburger menu + drawer
   - Test tablet viewport (768px): transitional layout
   - Test desktop viewport (1280px): horizontal navigation
   - Assert touch targets ≥ 44x44px on mobile
 
 ### Unit Tests (Utilities)
-- [ ] **T015** [P] Write failing unit tests for auth utilities in `__tests__/unit/auth.test.ts`
+- [X] **T015** [P] Write failing unit tests for auth utilities in `__tests__/unit/auth.test.ts`
   - validateCredentials(email, password) → true/false
   - createTokens(teacherEmail) → { accessToken, refreshToken, expiresAt }
   - verifyToken(token) → { valid, expired, payload }
   - Test edge cases: empty strings, invalid formats, expired tokens
 
-- [ ] **T016** [P] Write failing unit tests for session utilities in `__tests__/unit/session.test.ts`
+- [X] **T016** [P] Write failing unit tests for session utilities in `__tests__/unit/session.test.ts`
   - createSession(teacher) → Session object with correct expiration times
   - validateSession(accessToken, refreshToken) → session state (Active, Refreshable, Expired)
   - refreshSession(refreshToken) → new access token
@@ -122,7 +122,7 @@
 ---
 
 ## Phase 3.2.1: Commit Failing Tests ⚠️ BLOCKING
-- [ ] **T017** Run all tests and verify they FAIL (npm test)
+- [X] **T017** Run all tests and verify they FAIL (npm test)
   - All contract tests should fail (no API routes exist yet)
   - All integration tests should fail (no components/pages exist yet)
   - All unit tests should fail (no utilities exist yet)
