@@ -9,6 +9,8 @@
  * Phase 3.5 - Component Implementation (TDD Green Phase)
  */
 
+'use client';
+
 import Link from 'next/link';
 import type { MenuGridProps } from '@/types/teacher';
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';

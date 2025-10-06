@@ -117,6 +117,48 @@ The `.specify/` directory contains templates and scripts for the SpecKit workflo
 - Prefer existing shadcn components over custom implementations
 - Follow shadcn component patterns and conventions
 
+### shadcn/ui + Next.js 15 Server Components Best Practices
+
+**CRITICAL: All shadcn/ui components that use `@radix-ui/react-slot` MUST have `"use client"` directive**
+
+**Why:**
+- `@radix-ui/react-slot` is a client-only dependency
+- Next.js treats components without `"use client"` as Server Components
+- Importing client-only packages in Server Components causes build errors:
+  ```
+  'client-only' cannot be imported from a Server Component module
+  ```
+
+**Components requiring `"use client"`:**
+- ✅ `button.tsx` - uses Slot for asChild prop
+- ✅ `badge.tsx` - uses Slot for asChild prop
+- ✅ `breadcrumb.tsx` - uses Slot for navigation
+- ⚠️ Any other component using `import { Slot } from "@radix-ui/react-slot"`
+
+**Pattern:**
+```tsx
+// src/components/ui/button.tsx
+"use client"
+
+import * as React from "react"
+import { Slot } from "@radix-ui/react-slot"
+// ... rest of component
+```
+
+**Testing limitation:**
+- React Testing Library unit tests do NOT catch these errors
+- Errors only appear at runtime or during production build
+- **ALWAYS run `npm run build` before committing UI component changes**
+
+**When adding new shadcn/ui components:**
+1. Check if component imports `@radix-ui/react-slot`
+2. If yes, add `"use client"` as first line
+3. Verify with `npm run build`
+
+**Reference:**
+- Next.js Docs: [Using Third-party Packages](https://nextjs.org/docs/app/building-your-application/rendering/composition-patterns#using-third-party-packages-and-providers)
+- shadcn/ui Config: `components.json` has `"rsc": true` for automatic directive insertion
+
 
 ### Pre-Deployment Best Practices
 
@@ -166,6 +208,63 @@ git push
 - その後、テストをパスさせる実装を進める
 - 実装中はテストを変更せず、コードを修正し続ける
 - すべてのテストが通過するまで繰り返す
+
+### Testing Levels and Validation Strategy
+
+#### 1. Unit Testing (Jest + React Testing Library)
+**目的:** コンポーネントの個別のロジックと振る舞いを検証
+
+**実施タイミング:** TDDサイクルの一部として常時
+
+**限界:**
+- ❌ Next.jsのServer/Client Component境界エラーを検出できない
+- ❌ クライアント専用依存関係（@radix-ui/react-slot等）の誤用を検出できない
+- ❌ ビルド時の最適化エラーを検出できない
+
+#### 2. Build-time Validation (必須)
+**CRITICAL: コミット前に必ず実行**
+
+```bash
+npm run build
+```
+
+**検出できるエラー:**
+- ✅ Server/Client Component境界の違反
+- ✅ 'client-only' パッケージの誤ったインポート
+- ✅ TypeScriptの厳密な型チェック（本番環境と同等）
+- ✅ Next.jsビルド最適化エラー
+- ✅ 未使用のエクスポート、循環依存等
+
+**必須ワークフロー:**
+```bash
+# 1. 単体テスト実施
+npm test
+
+# 2. すべてのテストが成功したら、ビルドで最終検証
+npm run build
+
+# 3. ビルドが成功した場合のみコミット
+git add .
+git commit -m "..."
+```
+
+**ビルドが失敗した場合:**
+- 単体テストは成功してもコミットしない
+- エラーを修正してから再度ビルドを実行
+- ビルド成功を確認してからコミット
+
+#### 3. E2E Testing (推奨)
+**目的:** 実際のNext.js環境での動作を検証
+
+**実施タイミング:** 主要機能の実装完了後、デプロイ前
+
+**ツール:** Playwright (MCP経由)
+
+**検証内容:**
+- ページ遷移とルーティング
+- Server Componentのデータフェッチ
+- Client Componentのインタラクション
+- フォーム送信とバリデーション
 
 
 ## Playwright MCP使用ルール

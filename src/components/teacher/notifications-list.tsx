@@ -9,6 +9,8 @@
  * Phase 3.5 - Component Implementation (TDD Green Phase)
  */
 
+'use client';
+
 import type { NotificationsListProps, Notification } from '@/types/teacher';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
